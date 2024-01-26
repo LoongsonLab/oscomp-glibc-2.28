@@ -1,0 +1,21 @@
+#!/bin/sh
+
+export CROSS_HOST="$(echo $MACHTYPE | sed "s/$(echo $MACHTYPE | cut -d- -f2)/cross/")"
+export CROSS_TARGET="loongarch64-linux-gnu"
+export MABI="lp64d"
+export BUILD64="-mabi=lp64d"
+export SYSDIR="/home/airxs/user/os/local/build-glibc/sysroot"
+
+
+BUILD_CC="gcc" CC="${CROSS_TARGET}-gcc ${BUILD64}" \
+        CXX="${CROSS_TARGET}-gcc ${BUILD64}" \
+        AR="${CROSS_TARGET}-ar" RANLIB="${CROSS_TARGET}-ranlib" \
+../configure --prefix=/usr --host=${CROSS_TARGET} --build=${CROSS_HOST} \
+                         --libdir=${SYSDIR}/usr/lib64 --libexecdir=${SYSDIR}/usr/lib64/glibc \
+                         --with-headers=${SYSDIR}/usr/include \
+                         --disable-werror --enable-obsolete-rpc
+
+                         # --enable-kernel=4.15
+
+
+# make DESTDIR=/home/airxs/user/os/local/build-glibc/sysroot install
